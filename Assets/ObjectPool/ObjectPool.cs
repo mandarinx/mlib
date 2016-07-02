@@ -5,24 +5,39 @@ namespace Mandarin {
 
     public class ObjectPool<T> where T : class {
 
-        private List<T>         actives;
         private List<T>         deactives;
         private int             max;
-        private Func<int, T>    Instantiate;
 
+        protected Func<int, T>  Instantiate;
         protected Action<T>     OnDestroy;
         protected Action<T>     OnSpawn;
         protected Action<T>     OnDespawn;
 
-        public ObjectPool() {
+        public int capacity {
+            get { return max < 0 ? int.MaxValue : max; }
+        }
+
+        public int numItems {
+            get { return numActives + numDeactives; }
+        }
+
+        public int      numActives { get; private set; }
+        public int      numDeactives { get; private set; }
+        public List<T>  actives { get; private set; }
+
+        public ObjectPool(int size) {
             OnDestroy = t => {};
             OnSpawn = t => {};
             OnDespawn = t => {};
-            max = -1;
+            max = size;
+            actives = new List<T>(size);
+            deactives = new List<T>(size);
+            numActives = 0;
+            numDeactives = 0;
         }
 
-        static public ObjectPool<T> Create() {
-            return new ObjectPool<T>();
+        static public ObjectPool<T> Create(int size) {
+            return new ObjectPool<T>(size);
         }
 
         public virtual ObjectPool<T> SetOnDestroy(Action<T> cb) {
@@ -40,26 +55,36 @@ namespace Mandarin {
             return this;
         }
 
-        // Set the initial size of the pool. This is the number of
-        // objects that will be created when filling the pool.
-        public virtual ObjectPool<T> SetSize(int size) {
-            actives = new List<T>(size);
-            deactives = new List<T>(size);
+        // Resize capacity
+        public virtual ObjectPool<T> Resize(int size) {
+            actives.Capacity = size;
+            deactives.Capacity = size;
             return this;
         }
 
         // Set whether it should grow or not when trying to spawn more
         // instances than there are slots in the pool.
         public virtual ObjectPool<T> Grow(bool grow) {
-            max = grow ? -1 : actives.Capacity;
+            max = grow ? -1 : max;
             return this;
         }
 
         // Fills the pool with instances of the specified type.
         public virtual ObjectPool<T> Fill(Func<int, T> Instantiate) {
             this.Instantiate = Instantiate;
-            while (deactives.Count < deactives.Capacity) {
-                AddInstance(deactives.Count);
+            while (numDeactives < deactives.Capacity) {
+                AddInstance(numDeactives);
+            }
+            return this;
+        }
+
+        // Fills the pool with instances of the specified type.
+        public virtual ObjectPool<T> Fill() {
+            Instantiate = i => {
+                return default(T);
+            };
+            while (numDeactives < deactives.Capacity) {
+                AddInstance(numDeactives);
             }
             return this;
         }
@@ -87,12 +112,14 @@ namespace Mandarin {
             }
             OnDespawn(instance);
             deactives.Add(instance);
+            numDeactives++;
             actives.RemoveAt(index);
+            numActives--;
         }
 
         // Despawn all active instances.
         public void Reset() {
-            while (actives.Count > 0) {
+            while (numActives > 0) {
                 Despawn(actives[0]);
             }
         }
@@ -115,6 +142,7 @@ namespace Mandarin {
             int l = list.Count;
             for (int i=0; i<l; i++) {
                 OnDestroy(list[i]);
+                list[i] = null;
             }
         }
 
@@ -122,6 +150,7 @@ namespace Mandarin {
         private void AddInstance(int num) {
             T instance = Instantiate(num);
             deactives.Add(instance);
+            numDeactives++;
             OnDespawn(instance);
         }
 
@@ -148,31 +177,31 @@ namespace Mandarin {
                 if (max >= 0) {
                     return null;
                 }
-                AddInstance(actives.Count);
+                AddInstance(numActives);
             }
 
             T instance = deactives[0];
             actives.Add(instance);
+            numActives++;
             deactives.RemoveAt(0);
+            numDeactives--;
             return instance;
         }
 
-        public int Capacity {
-            get { return max < 0 ? int.MaxValue : max; }
-        }
-
-        public int NumItems {
-            get { return actives.Count + deactives.Count; }
-        }
-
-        public List<T> Actives {
-            get { return actives; }
+        public ObjectPool<T> Each(Action<T> apply) {
+            for (int i=0; i<numActives; i++) {
+                apply(actives[i]);
+            }
+            for (int i=0; i<numDeactives; i++) {
+                apply(deactives[i]);
+            }
+            return this;
         }
 
         override public string ToString() {
             return "ObjectPool<" + typeof(T) + "> " +
-                "Actives: " + actives.Count + "/" + actives.Capacity + " " +
-                "Deactives: " + deactives.Count + "/" + deactives.Capacity + " " +
+                "Actives: " + numActives + "/" + actives.Capacity + " " +
+                "Deactives: " + numDeactives + "/" + deactives.Capacity + " " +
                 "Grow: " + (max < 0 ? "true" : "false");
         }
     }

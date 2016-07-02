@@ -1,0 +1,1 @@
+﻿using UnityEngine;public class CubeBehaviour : MonoBehaviour {    void Awake() {        // Debug.Log(transform.name + " awake");    }    void Start() {        // Debug.Log(transform.name + " start");    }    void OnEnable() {        // Debug.Log(transform.name + " enable");    }    void OnDisable() {        // Debug.Log(transform.name + " disable");    }}

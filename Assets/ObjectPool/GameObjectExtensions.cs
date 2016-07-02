@@ -1,11 +1,10 @@
 using UnityEngine;
 
 namespace Mandarin {
-    public static class GameObjectPoolExtensions {
+    public static class GameObjectExtensions {
 
-        public static GameObjectPool Pool(this GameObject go, int num) {
-            return GameObjectPool.Create()
-                .SetSize(num)
+        public static GOPool Pool(this GameObject go, int num) {
+            return GOPool.Create(num)
                 .Fill(i => {
                     GameObject instance = GameObject.Instantiate(go);
                     instance.name = go.name + "_" + i;
