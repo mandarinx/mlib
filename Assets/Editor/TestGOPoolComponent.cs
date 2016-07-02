@@ -129,4 +129,39 @@ public class TestGOPoolComponent {
             .Spawn(out cb);
         Assert.AreEqual(cb.GetType(), typeof(CubeBehaviour));
     }
+
+    [Test]
+    public void SetOnSpawn() {
+        GOPool<CubeBehaviour> p = GOPool<CubeBehaviour>.Create(2)
+            .SetOnSpawn(t => {
+                t.transform.position = Vector3.right;
+                // GOPool activates the object after the lambda has
+                // run. This should be reverted after Spawn() has run.
+                t.gameObject.SetActive(false);
+            })
+            .Fill("Cube");
+
+        CubeBehaviour i;
+        p.Spawn(out i);
+        Assert.AreEqual(i.transform.position, Vector3.right);
+        Assert.AreEqual(i.gameObject.activeSelf, true);
+    }
+
+    [Test]
+    public void SetOnDespawn() {
+        GOPool<CubeBehaviour> p = GOPool<CubeBehaviour>.Create(2)
+            .SetOnDespawn(t => {
+                t.transform.position = -Vector3.right;
+                // GOPool deactivates the object after the lambda has
+                // run. This should be reverted after Spawn() has run.
+                t.gameObject.SetActive(true);
+            })
+            .Fill("Cube");
+
+        CubeBehaviour i;
+        p.Spawn(out i);
+        p.Despawn(i);
+        Assert.AreEqual(i.transform.position, -Vector3.right);
+        Assert.AreEqual(i.gameObject.activeSelf, false);
+    }
 }

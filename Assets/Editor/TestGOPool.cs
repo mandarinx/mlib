@@ -57,6 +57,19 @@ public class TestGOPool {
     }
 
     [Test]
+    public void SetParent() {
+        Transform parent = new GameObject("Parent").transform;
+
+        GOPool p = GOPool.Create(2)
+            .Parent(parent)
+            .Fill();
+
+        Transform t;
+        p.Spawn(out t);
+        Assert.AreEqual(t.parent, parent);
+    }
+
+    [Test]
     public void FillResourcesPath() {
         GOPool p = GOPool.Create(2)
             .Fill("Cube");
@@ -107,15 +120,37 @@ public class TestGOPool {
     }
 
     [Test]
-    public void SetParent() {
-        Transform parent = new GameObject("Parent").transform;
-
+    public void SetOnSpawn() {
         GOPool p = GOPool.Create(2)
-            .Parent(parent)
-            .Fill();
+            .SetOnSpawn(t => {
+                t.transform.position = Vector3.right;
+                // GOPool activates the object after the lambda has
+                // run. This should be reverted after Spawn() has run.
+                t.gameObject.SetActive(false);
+            })
+            .Fill("Cube");
 
-        Transform t;
-        p.Spawn(out t);
-        Assert.AreEqual(t.parent, parent);
+        Transform i;
+        p.Spawn(out i);
+        Assert.AreEqual(i.position, Vector3.right);
+        Assert.AreEqual(i.gameObject.activeSelf, true);
+    }
+
+    [Test]
+    public void SetOnDespawn() {
+        GOPool p = GOPool.Create(2)
+            .SetOnDespawn(t => {
+                t.transform.position = -Vector3.right;
+                // GOPool deactivates the object after the lambda has
+                // run. This should be reverted after Spawn() has run.
+                t.gameObject.SetActive(true);
+            })
+            .Fill("Cube");
+
+        Transform i;
+        p.Spawn(out i);
+        p.Despawn(i);
+        Assert.AreEqual(i.position, -Vector3.right);
+        Assert.AreEqual(i.gameObject.activeSelf, false);
     }
 }
