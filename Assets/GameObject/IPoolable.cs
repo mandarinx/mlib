@@ -1,5 +1,5 @@
 
-namespace Mandarin {
+namespace Mlib {
     public interface IPoolable {
         void OnEnable();
         void OnDisable();

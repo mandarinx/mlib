@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Mandarin {
+namespace Mlib {
 
     public class ObjectPool<T> where T : class {
 
@@ -36,7 +36,7 @@ namespace Mandarin {
             numDeactives = 0;
         }
 
-        static public ObjectPool<T> Create(int size) {
+        public static ObjectPool<T> Create(int size) {
             return new ObjectPool<T>(size);
         }
 

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Mandarin {
+namespace Mlib {
     public class GOPool<T> where T : Component {
 
         private ObjectPool<T>   pool;

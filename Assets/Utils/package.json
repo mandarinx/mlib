@@ -1,0 +1,14 @@
+{
+    "name": "com.mlib.utils",
+    "displayName": "Mlib utilities",
+    "version": "0.0.1",
+    "unity": "2018.2",
+    "description": "Utility classes for gizmos, transforms, ...",
+    "keywords": [
+        "components",
+        "utility",
+        "mlib",
+        "unity"
+    ],
+    "category": "Unity"
+}

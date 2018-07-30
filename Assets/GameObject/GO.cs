@@ -1,64 +1,62 @@
 using System;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Object = UnityEngine.Object;
 
-namespace Mandarin {
+namespace Mlib {
 
-    public partial class GO {
-
-        private GameObject current;
-
-        static public GO Create(string name = "GameObject") {
+    public class GO {
+        public static GO Create(string name = "GameObject") {
             return new GO(name);
         }
 
-        static public GO Create(PrimitiveType type) {
+        public static GO Create(PrimitiveType type) {
             return new GO(GameObject.CreatePrimitive(type));
         }
 
-        static public GO Modify(GameObject go) {
+        public static GO Modify(GameObject go) {
             return new GO(go);
         }
 
-        static public GO Instantiate(GameObject prefab) {
-            return new GO(GameObject.Instantiate(prefab));
+        public static GO Instantiate(GameObject prefab) {
+            return new GO(Object.Instantiate(prefab));
         }
 
         public GO(string name = "GameObject") {
-            current = new GameObject(name);
+            GameObject = new GameObject(name);
         }
 
         public GO(GameObject go) {
-            current = go;
+            GameObject = go;
         }
 
         public GO SetName(string name) {
-            current.name = name;
+            GameObject.name = name;
             return this;
         }
 
         public GO SetLayer(string name) {
-            current.layer = LayerMask.NameToLayer(name);
+            GameObject.layer = LayerMask.NameToLayer(name);
             return this;
         }
 
         public GO SetParent(Transform parent, bool worldPositionStays = true) {
-            current.transform.SetParent(parent, worldPositionStays);
+            GameObject.transform.SetParent(parent, worldPositionStays);
             return this;
         }
 
         public GO SetParent(GO parent, bool worldPositionStays = true) {
-            current.transform.SetParent(parent.transform, worldPositionStays);
+            GameObject.transform.SetParent(parent.Transform, worldPositionStays);
             return this;
         }
 
         public GO SetAsLastSibling() {
-            current.transform.SetAsLastSibling();
+            GameObject.transform.SetAsLastSibling();
             return this;
         }
 
         public GO SetActive(bool active = true) {
-            current.SetActive(active);
+            GameObject.SetActive(active);
             return this;
         }
 
@@ -88,25 +86,25 @@ namespace Mandarin {
         }
 
         public GO SetScale(Vector3 scale) {
-            current.transform.localScale = scale;
+            GameObject.transform.localScale = scale;
             return this;
         }
 
         public GO SetPosition(Vector3 position) {
-            current.transform.position = position;
+            GameObject.transform.position = position;
             return this;
         }
 
         public GO SetLocalPosition(Vector3 position) {
-            current.transform.localPosition = position;
+            GameObject.transform.localPosition = position;
             return this;
         }
 
         public GO SetRotation(Quaternion quaternion, bool local = false) {
             if (local) {
-                current.transform.localRotation = quaternion;
+                GameObject.transform.localRotation = quaternion;
             } else {
-                current.transform.rotation = quaternion;
+                GameObject.transform.rotation = quaternion;
             }
             return this;
         }
@@ -119,23 +117,17 @@ namespace Mandarin {
         }
 
         public GO AddComponent<T>(Action<T> callback = null) where T : Component {
-            T component = current.AddComponent<T>();
-            if (callback != null) {
-                callback(component);
-            }
+            callback?.Invoke(GameObject.AddComponent<T>());
             return this;
         }
 
         public GO AddComponent(Type type, Action<Component> callback = null) {
-            Component component = current.AddComponent(type);
-            if (callback != null) {
-                callback(component);
-            }
+            callback?.Invoke(GameObject.AddComponent(type));
             return this;
         }
 
         public GO GetComponent<T>(Action<T> callback) where T : Component {
-            T comp = current.GetComponent<T>();
+            T comp = GameObject.GetComponent<T>();
             if (comp != null) {
                 callback(comp);
             }
@@ -143,31 +135,26 @@ namespace Mandarin {
         }
 
         public void Destroy() {
-            GameObject.Destroy(current);
+            Object.Destroy(GameObject);
         }
 
         public void Destroy(float afterSeconds) {
-            GameObject.Destroy(current, afterSeconds);
+            Object.Destroy(GameObject, afterSeconds);
         }
 
         public GameObject Duplicate() {
-            return GameObject.Instantiate(current);
+            return Object.Instantiate(GameObject);
         }
 
         private T GetSetComp<T>() where T : Component {
-            T comp = current.GetComponent<T>();
+            T comp = GameObject.GetComponent<T>();
             if (comp == null) {
-                comp = current.AddComponent<T>();
+                comp = GameObject.AddComponent<T>();
             }
             return comp;
         }
 
-        public GameObject gameObject {
-            get { return current; }
-        }
-
-        public Transform transform {
-            get { return current.transform; }
-        }
+        public GameObject GameObject { get; }
+        public Transform Transform => GameObject.transform;
     }
 }

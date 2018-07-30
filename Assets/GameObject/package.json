@@ -1,0 +1,15 @@
+{
+    "name": "com.mlib.gameobject",
+    "displayName": "Mlib GameObject tools",
+    "version": "0.0.1",
+    "unity": "2018.2",
+    "description": "Commonly used GameObject operations and pools",
+    "keywords": [
+        "GameObject",
+        "pools",
+        "utility",
+        "mlib",
+        "unity"
+    ],
+    "category": "Unity"
+}

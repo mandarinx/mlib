@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Mandarin {
+namespace Mlib {
     public static class GameObjectExtensions {
 
         public static GOPool Pool(this GameObject go, int num) {

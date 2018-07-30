@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 
-namespace Mandarin {
+namespace Mlib {
 
     public class GOPool : GOPool<Transform> {
 
-        static public new GOPool Create(int size) {
+        public new static GOPool Create(int size) {
             return new GOPool(size);
         }
 
