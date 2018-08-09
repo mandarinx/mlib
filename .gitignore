@@ -28,3 +28,4 @@ sysinfo.txt
 *.sublime-project
 *.sublime-workspace
 .DS_Store
+/.idea
