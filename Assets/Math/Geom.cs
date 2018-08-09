@@ -58,5 +58,58 @@ namespace Mlib.Math {
             };
             return 2;
         }
+
+        // Taken from https://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm/1088058#1088058
+        public static int LineCircleIntersection(Vector2     lineFrom,
+                                                 Vector2     lineTo,
+                                                 Vector2     circleCenter,
+                                                 float       radius,
+                                                 out Vector2 intersectionA,
+                                                 out Vector2 intersectionB) {
+            // compute the euclidean distance between lineFrom and lineTo
+            float lab = Mathf.Sqrt(Mathf.Pow(lineTo.x - lineFrom.x, 2) + Mathf.Pow(lineTo.y - lineFrom.y, 2));
+            // compute the direction vector D from lineFrom to lineTo
+            Vector3 d = (lineTo - lineFrom) / lab;
+
+            // Now the line equation is x = Dx*t + Ax, y = Dy*t + Ay with 0 <= t <= 1.
+
+            // compute the value t of the closest point to the circle center
+            float t = d.x * (circleCenter.x - lineFrom.x) + d.y * (circleCenter.y - lineFrom.y);
+
+            // This is the projection of circleCenter on the line from lineFrom to lineTo.
+
+            // compute the coordinates of the point E on line and closest to C
+            Vector2 e = new Vector2(t * d.x + lineFrom.x,
+                                    t * d.y + lineFrom.y);
+            // compute the euclidean distance from E to C
+            float lec = Mathf.Sqrt(Mathf.Pow(e.x - circleCenter.x, 2) + Mathf.Pow(e.y - circleCenter.y, 2));
+
+            // test if the line intersects the circle
+            if (lec < radius) {
+                // compute distance from t to circle intersection point
+                float dt = Mathf.Sqrt(Mathf.Pow(radius, 2) - Mathf.Pow(lec, 2));
+
+                // compute first intersection point
+                intersectionA = new Vector2((t - dt) * d.x + lineFrom.x,
+                                            (t - dt) * d.y + lineFrom.y);
+                // compute second intersection point
+                intersectionB = new Vector2((t + dt) * d.x + lineFrom.x,
+                                            (t + dt) * d.y + lineFrom.y);
+                return 2;
+            }
+
+            // else test if the line is tangent to circle
+            if (Mathf.Abs(lec - radius) < float.Epsilon) {
+                intersectionA = e;
+                intersectionB = new Vector2(float.NaN, float.NaN);
+                return 1;
+            }
+
+            // line doesn't touch circle
+            intersectionA = new Vector2(float.NaN, float.NaN);
+            intersectionB = new Vector2(float.NaN, float.NaN);
+            return 0;
+        }
+
     }
 }
