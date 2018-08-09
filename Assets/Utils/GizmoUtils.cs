@@ -4,7 +4,7 @@ namespace Mlib {
 
     public static class GizmoUtils {
 
-        public const float DRAW_RES = Mathf.PI * 2f / 32f;
+        public static float res = Mathf.PI * 2f / 32f;
 
         public static void DrawCircleXY(Vector3 position, float radius) {
             DrawCircle(position, radius, Vector3.forward);
@@ -41,7 +41,7 @@ namespace Mlib {
 
         public static void DrawCircle(Vector3 position, float radius, Vector3 normal) {
             Vector3[] circleCoords;
-            int numCoords = GetCircleCoords(radius, DRAW_RES, out circleCoords);
+            int numCoords = GetCircleCoords(radius, out circleCoords);
             if (numCoords == 0) {
                 return;
             }
@@ -58,7 +58,7 @@ namespace Mlib {
         }
 
         // res = angle resolution in radians
-        public static int GetCircleCoords(float radius, float res, out Vector3[] coords) {
+        public static int GetCircleCoords(float radius, out Vector3[] coords) {
             float theta = 0f;
             float x = radius * Mathf.Cos(theta);
             float y = radius * Mathf.Sin(theta);
@@ -97,13 +97,13 @@ namespace Mlib {
             startRadians = Mathf.Clamp(startRadians, 0f, Mathf.PI * 2f);
             endRadians = Mathf.Clamp(endRadians, 0f, Mathf.PI * 2f);
             float diff = endRadians - startRadians;
-            int segments = Mathf.CeilToInt(diff / DRAW_RES);
+            int segments = Mathf.CeilToInt(diff / res);
             Vector3 from = new Vector3(Mathf.Cos(startRadians) * radius,
                                        Mathf.Sin(startRadians) * radius);
             from = RotateVector(from, normal);
 
             for (int i = 1; i <= segments; ++i) {
-                float rad = Mathf.Clamp(startRadians + DRAW_RES * i, startRadians, endRadians);
+                float rad = Mathf.Clamp(startRadians + res * i, startRadians, endRadians);
                 Vector3 to = new Vector3(Mathf.Cos(rad) * radius,
                                          Mathf.Sin(rad) * radius);
                 to = RotateVector(to, normal);
