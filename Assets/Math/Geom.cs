@@ -10,11 +10,11 @@ namespace Mlib.Math {
 
         // circleA is the center of the first circle, with radius radiusA
         // circleB is the center of the second circle, with radius radiusB
-        public static int Intersect(Vector2       circleA,
-                                    float         radiusA,
-                                    Vector2       circleB,
-                                    float         radiusB,
-                                    out Vector2[] intersections) {
+        public static int CircleCircleIntersect(Vector2       circleA,
+                                                float         radiusA,
+                                                Vector2       circleB,
+                                                float         radiusB,
+                                                out Vector2[] intersections) {
 
             float centerDx = circleA.x - circleB.x;
             float centerDy = circleB.y - circleB.y;
