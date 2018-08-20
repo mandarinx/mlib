@@ -1,0 +1,11 @@
+{
+    "name": "com.mlib.system",
+    "displayName": "Mlib System",
+    "version": "0.0.1",
+    "unity": "2018.2",
+    "description": "Mlib system utilities",
+    "category": "system",
+    "keywords": [
+        "system"
+    ]
+}
