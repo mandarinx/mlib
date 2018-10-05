@@ -1,5 +1,5 @@
 {
-    "name": "mlib.gameobject",
+    "name": "com.mlib.utils",
     "references": [],
     "optionalUnityReferences": [],
     "includePlatforms": [],

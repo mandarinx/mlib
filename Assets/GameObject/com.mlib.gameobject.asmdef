@@ -1,8 +1,6 @@
 {
-    "name": "com.mlib.editor",
-    "references": [
-        "com.mlib.editorutils"
-    ],
+    "name": "com.mlib.gameobject",
+    "references": [],
     "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],

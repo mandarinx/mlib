@@ -1,8 +1,10 @@
 {
-    "name": "mlib.utils",
+    "name": "com.mlib.editorutils",
     "references": [],
     "optionalUnityReferences": [],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false
 }

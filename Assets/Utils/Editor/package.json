@@ -1,0 +1,12 @@
+{
+    "name": "com.mlib.editorutils",
+    "displayName": "mlib editor utils",
+    "version": "1.0.0",
+    "unity": "2018.2.10",
+    "description": "A collection of editor utils",
+    "category": "editor utilities",
+    "keywords": [
+        "editor",
+        "utilities"
+    ]
+}
